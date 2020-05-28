@@ -274,7 +274,7 @@ export default class Home extends Component {
                                             <label htmlFor="exampleInputEmail1">Key</label>
                                             <select className="form-control" id="exampleFormControlSelect1">
                                                 <option onClick={this.keySelection.bind(this, "not")}>Generate new key</option>
-                                                <option onClick={this.keySelection.bind(this, "has")}>Aldready have key</option>
+                                                <option onClick={this.keySelection.bind(this, "has")}>Already have key</option>
                                             </select>
                                             <input type="text"
                                                 className="form-control mt-2"
