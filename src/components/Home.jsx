@@ -60,6 +60,7 @@ export default class Home extends Component {
                 var members = []
                 members.push(email);
                 createFamily(this.state.key, members)
+                $('#signupModal').modal('hide')
                 return true;
             }
             alert("Existed Family Key");
