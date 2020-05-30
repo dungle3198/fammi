@@ -36,7 +36,7 @@ export default class Home extends Component {
     handleFamilyKey(email) {
         var fam = family_list.find((e) => { return e.family_key === this.state.key });
         if (this.state.hasKey) {
-            if (fam !== undefined) {
+            if (fam !== 'undefined') {
                 fam.members.push(email)
                 joinFamily(this.state.key, fam.members);
                 this.setState({
@@ -44,8 +44,7 @@ export default class Home extends Component {
                     password: "",
                     key: "",
                     username: "",
-                    avatar: "",
-                    hasKey: false
+                    avatar: ""
                 })
                 data()
                 $('#signupModal').modal('hide')
@@ -56,7 +55,7 @@ export default class Home extends Component {
             return false
         }
         else {
-            if (fam === undefined) {
+            if (fam === 'undefined') {
                 var members = []
                 members.push(email);
                 createFamily(this.state.key, members)
@@ -83,10 +82,12 @@ export default class Home extends Component {
         if (name === "has") {
             console.log("you have a key already");
             this.setState({ hasKey: true })
+            return
         }
-        else {
+        if (name ==="not") {
             console.log("you dont have a key");
             this.setState({ hasKey: false })
+            return;
         }
     }
     signUp(e) {
