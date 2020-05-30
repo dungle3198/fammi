@@ -32,7 +32,7 @@ const getFamilies = () => {
     GetUsers();
     return family_list;
 };
-
+getFamilies();
 //this function is to add an item in a table in Dynamo
 const createFamily = async function (family_key,member) {
     var input = {

@@ -48,7 +48,7 @@ export default class Home extends Component {
                     avatar: ""
                 })
                 data()
-                getFamilies();
+
                 $('#signupModal').modal('hide')
                 return true;
 
@@ -62,6 +62,7 @@ export default class Home extends Component {
                 var members = []
                 members.push(email);
                 createFamily(this.state.key, members)
+                getFamilies();
                 //alert("You joined a family");
                 return true;
             }
