@@ -54,6 +54,7 @@ const createUser = async function (email, password, key, username,avatar,comet_i
             console.log("users::save::error - " + JSON.stringify(err, null, 2));
         } else {
             console.log("users::save::success");
+            data()
             alert("you have successfully signed up")
         }
     })
@@ -99,6 +100,7 @@ const updateUser = async function (email, password) {
             console.log("users::save::error - " + JSON.stringify(err, null, 2));
         } else {
             console.log("users::save::success");
+            data()
         }
     });
 }
@@ -114,6 +116,7 @@ const deleteUser = async function (email) {
         if (err) {
             //console.error("Unable to delete item. Error JSON:", JSON.stringify(err, null, 2));
         } else {
+            data()
             //console.log("DeleteItem succeeded:", JSON.stringify(data, null, 2));
         }
     });
