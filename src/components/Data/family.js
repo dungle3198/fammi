@@ -12,7 +12,7 @@ var family_list = [];
 let docClient = new AWS.DynamoDB.DocumentClient();
 
 //This function is to getting all the items in a table in Dynamo
-const getFamilies = () => {
+const getFamily = () => {
     var params = {
         TableName: "family"
     };
@@ -32,7 +32,7 @@ const getFamilies = () => {
     GetUsers();
     return family_list;
 };
-getFamilies();
+getFamily();
 //this function is to add an item in a table in Dynamo
 const createFamily = async function (family_key,member) {
     var input = {
@@ -52,6 +52,7 @@ const createFamily = async function (family_key,member) {
             console.log("users::save::error - " + JSON.stringify(err, null, 2));
         } else {
             console.log("users::save::success");
+            getFamily()
         }
     })
 }
@@ -147,4 +148,4 @@ const create_event_family = async function(family_key,event)
         }
     });
 }
-export {createFamily,joinFamily,create_todolist_family,create_post_family,create_event_family,family_list,getFamilies};
+export {createFamily,joinFamily,create_todolist_family,create_post_family,create_event_family,family_list,getFamily};

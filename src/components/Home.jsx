@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { createUser, data, user_list } from "./Data/user";
-import { createFamily, joinFamily, family_list,getFamilies } from "./Data/family";
+import { createFamily, joinFamily, family_list } from "./Data/family";
 import { create_cometchat_user } from './Data/cometchatuser'
 // import { ReactS3Client } from "./Data/s3";
 import Navbar from "./Navbar";
@@ -24,9 +24,10 @@ export default class Home extends Component {
             avatar: "",
             hasKey: false
         }
-
+        
     }
     checkUser() {
+        console.log("checking user")
         var email = cookie.get("email");
         //alert(email)
         if (email !== undefined) {
@@ -35,8 +36,7 @@ export default class Home extends Component {
     }
     handleFamilyKey(email) {
         var fam = family_list.find((e) => { return e.family_key === this.state.key });
-        if (this.state.hasKey === true) 
-        {
+        if (this.state.hasKey) {
             if (fam !== undefined) {
                 fam.members.push(email)
                 joinFamily(this.state.key, fam.members);
@@ -45,10 +45,10 @@ export default class Home extends Component {
                     password: "",
                     key: "",
                     username: "",
-                    avatar: ""
+                    avatar: "",
+                    hasKey: false
                 })
                 data()
-
                 $('#signupModal').modal('hide')
                 return true;
 
@@ -56,14 +56,11 @@ export default class Home extends Component {
             alert("Invalid Family Key");
             return false
         }
-        else if (this.state.hasKey === false)
-        {
+        else {
             if (fam === undefined) {
                 var members = []
                 members.push(email);
                 createFamily(this.state.key, members)
-                getFamilies();
-                //alert("You joined a family");
                 return true;
             }
             alert("Existed Family Key");
@@ -83,21 +80,18 @@ export default class Home extends Component {
         //     return;
         // }
     }
-    keySelection(name) {
-        if (name === "has") {
+    keySelection(e) {
+        if (e.target.value === "has") {
             console.log("you have a key already");
             this.setState({ hasKey: true })
-            return
         }
-        if (name ==="not") {
+        else {
             console.log("you dont have a key");
             this.setState({ hasKey: false })
-            return;
         }
     }
     signUp(e) {
-        if (user_list.find(u => u.email === this.state.email) === undefined) 
-        {
+        if (user_list.find(u => u.email === this.state.email) === undefined) {
             function validateEmail(email) {
                 return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
             }
@@ -108,6 +102,7 @@ export default class Home extends Component {
                 createUser(this.state.email, hashed, this.state.key, this.state.username, "", commet_id)// then create it 
                 create_cometchat_user(this.state.email, commet_id, "https://unknown2020.s3-ap-southeast-1.amazonaws.com/ava.jpg", this.state.key)
                 this.handleFamilyKey(this.state.email)
+                
                 return (<Redirect to={"/"} />)
                 // if (document.getElementById("avatar").files[0] === undefined) {
                 //     createUser(this.state.email, hashed, this.state.key, this.state.username, "", commet_id)// then create it 
@@ -159,7 +154,7 @@ export default class Home extends Component {
                     }
                 }
                 this.props.loginFunction(user);
-                //alert("You have logged in successfully.")
+                alert("You have logged in successfully.")
                 return
             }
         }
@@ -182,7 +177,6 @@ export default class Home extends Component {
     }
     componentDidMount() {
         data();
-        getFamilies();
     }
 
     render() {
@@ -279,9 +273,9 @@ export default class Home extends Component {
                                         </div>
                                         <div className="form-group">
                                             <label htmlFor="exampleInputEmail1">Key</label>
-                                            <select className="form-control" id="exampleFormControlSelect1">
-                                                <option onClick={this.keySelection.bind(this, "not")}>Generate new key</option>
-                                                <option onClick={this.keySelection.bind(this, "has")}>Already have key</option>
+                                            <select className="form-control" id="exampleFormControlSelect1" onChange = {this.keySelection.bind(this)}>
+                                                <option value ={"not"}>Generate new key</option>
+                                                <option value ={"has"}>Aldready have key</option>
                                             </select>
                                             <input type="text"
                                                 className="form-control mt-2"

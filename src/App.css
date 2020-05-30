@@ -70,7 +70,7 @@
   height: 100vh;
 }
 .User .chat{
-  height: 40vh;
+  height: calc(31vh + 2px);
   background-color: white;
 }
 .User .Stick{
@@ -702,3 +702,6 @@ input.textarea {
 /* .PostContent{
   width: 100%;
 } */
+.AddButton{
+  border: none
+}
