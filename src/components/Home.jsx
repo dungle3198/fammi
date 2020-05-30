@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { createUser, data, user_list } from "./Data/user";
-import { createFamily, joinFamily, family_list } from "./Data/family";
+import { createFamily, joinFamily, family_list,getFamilies } from "./Data/family";
 import { create_cometchat_user } from './Data/cometchatuser'
 // import { ReactS3Client } from "./Data/s3";
 import Navbar from "./Navbar";
@@ -35,8 +35,9 @@ export default class Home extends Component {
     }
     handleFamilyKey(email) {
         var fam = family_list.find((e) => { return e.family_key === this.state.key });
-        if (this.state.hasKey) {
-            if (fam !== 'undefined') {
+        if (this.state.hasKey === true) 
+        {
+            if (fam !== undefined) {
                 fam.members.push(email)
                 joinFamily(this.state.key, fam.members);
                 this.setState({
@@ -47,6 +48,7 @@ export default class Home extends Component {
                     avatar: ""
                 })
                 data()
+                getFamilies();
                 $('#signupModal').modal('hide')
                 return true;
 
@@ -54,11 +56,13 @@ export default class Home extends Component {
             alert("Invalid Family Key");
             return false
         }
-        else {
-            if (fam === 'undefined') {
+        else if (this.state.hasKey === false)
+        {
+            if (fam === undefined) {
                 var members = []
                 members.push(email);
                 createFamily(this.state.key, members)
+                alert("You joined a family");
                 return true;
             }
             alert("Existed Family Key");
@@ -91,7 +95,8 @@ export default class Home extends Component {
         }
     }
     signUp(e) {
-        if (user_list.find(u => u.email === this.state.email) === undefined) {
+        if (user_list.find(u => u.email === this.state.email) === undefined) 
+        {
             function validateEmail(email) {
                 return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
             }
@@ -176,6 +181,7 @@ export default class Home extends Component {
     }
     componentDidMount() {
         data();
+        getFamilies();
     }
 
     render() {
