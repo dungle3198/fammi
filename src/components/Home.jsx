@@ -62,7 +62,7 @@ export default class Home extends Component {
                 var members = []
                 members.push(email);
                 createFamily(this.state.key, members)
-                alert("You joined a family");
+                //alert("You joined a family");
                 return true;
             }
             alert("Existed Family Key");
