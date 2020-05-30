@@ -132,21 +132,25 @@ export default class Comment extends Component {
         </div>
     }
     deleteFunction(e) {
-        var id = e.target.id;
-        var params = {
-            TableName: "comment",
-            Key: {
-                "comment_id": id,
-            }
-        };
-        docClient.delete(params, function (err, data) {
-            if (err) {
-                console.error("Unable to delete item. Error JSON:", JSON.stringify(err, null, 2));
-            } else {
-                this.getComments();
-                console.log("DeleteItem succeeded:", JSON.stringify(data, null, 2));
-            }
-        }.bind(this));
+        var confirm_box = window.confirm("Do you want to delete the comment.");
+        if (confirm_box === true) {
+            var id = e.target.id;
+            var params = {
+                TableName: "comment",
+                Key: {
+                    "comment_id": id,
+                }
+            };
+            docClient.delete(params, function (err, data) {
+                if (err) {
+                    console.error("Unable to delete item. Error JSON:", JSON.stringify(err, null, 2));
+                } else {
+                    this.getComments();
+                    console.log("DeleteItem succeeded:", JSON.stringify(data, null, 2));
+                }
+            }.bind(this));
+        }
+
     }
     handleClick(e) {
         //console.log(e.target.id);
@@ -236,7 +240,7 @@ export default class Comment extends Component {
     handlestring_length(comment, type) {
         var length_per_row = this.props.length_per_row;
         var length = comment.content.length;
-        if (comment.content.match(/m/g) !== null){
+        if (comment.content.match(/m/g) !== null) {
             length = length + comment.content.match(/m/g).length
         }
         //console.log("There are" + length+" chars in this line");
@@ -276,18 +280,18 @@ export default class Comment extends Component {
                                 </div>
                                 <div className="col p-0">
                                     <div className="d-flex">
-                                        <p className="line m-0 pl-2 pr-2">
+                                        <div className="line m-0 pl-2 pr-2">
                                             <span>{this.handleTitle(comment.user)}</span>
-                                        </p>
+                                        </div>
                                     </div>
                                     <textarea className="ml-2 mr-2 content noInput"
                                         rows={this.handlestring_length(comment, "row")}
                                         cols={this.handlestring_length(comment, "col")}
                                         value={comment.content} readOnly>
                                     </textarea>
-                                    <p className="CommentTime p-0 pl-2">
+                                    <div className="CommentTime p-0 pl-2">
                                         <small>{this.handleEdit_Time(comment)}</small>{this.editable(comment)}
-                                    </p>
+                                    </div>
 
                                 </div>
                             </div>

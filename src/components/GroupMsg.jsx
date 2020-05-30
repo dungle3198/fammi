@@ -226,7 +226,7 @@ class Groupchat extends React.Component {
                         })}
                     </ul>
                     <div className="chatInputWrapper row w-100 m-0">
-                        <form className="col-10 p-0" onSubmit={this.sendMessageButton.bind(this)}>
+                        <form className="col-9 p-0" onSubmit={this.sendMessageButton.bind(this)}>
                             <input
                                 className="textarea input h-100 bg-white border rounded"
                                 type="text"

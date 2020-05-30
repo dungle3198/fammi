@@ -384,7 +384,7 @@ export default class Post extends Component {
                     <div className="d-flex">
                         <span className="ml-auto">
                             <div className="upload-btn-wrapper">
-                                <button className="btn">Upload Image/Video</button>
+                                <button className="btn btn-success">Upload Image/Video</button>
                                 <input type="file"
                                     className="file"
                                     id="img"
@@ -411,7 +411,7 @@ export default class Post extends Component {
                                 <div className="d-flex">
                                     <span className="ml-auto">
                                         <div className="upload-btn-wrapper">
-                                            <button className="btn">Upload Image/Video</button>
+                                            <button className="btn btn-success">Upload Image/Video</button>
                                             <input type="file"
                                                 className="file"
                                                 id="imgedit"

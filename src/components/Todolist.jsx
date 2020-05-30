@@ -364,7 +364,7 @@ export default class Todolist extends Component {
                             <div className="Element">
                                 {this.show_Edit_Elements()}
                             </div>
-                            <li className="list-group-item text-center lead p-0" onClick={this.handleEditForm.bind(this)}>+</li>
+                            <li className="AddButton list-group-item text-center lead p-0" onClick={this.handleEditForm.bind(this)}><span className="btn btn-success">Add Element</span></li>
                             <p className="text-right m-0">
                                 <button type="button" className="btn btn-primary mt-2" onClick={this.updateButton.bind(this)}>Edit</button>
                             </p>
@@ -458,7 +458,7 @@ export default class Todolist extends Component {
                     <div className="Element">
                         {this.showElementsCreate()}
                     </div>
-                    <li className="list-group-item text-center lead p-0" onClick={this.handleAddForm.bind(this)}>+</li>
+                    <li className="AddButton list-group-item text-center lead p-0" onClick={this.handleAddForm.bind(this)}><span className="btn btn-success">Add Element</span></li>
                     <p className="text-right m-0">
                         <button type="button" className="btn btn-primary mt-2" onClick={this.handleCreate.bind(this)}>Create</button>
                     </p>

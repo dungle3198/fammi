@@ -3,8 +3,8 @@ import S3 from 'react-aws-s3';
 const config = {
     bucketName: 'unknown2020',
     region: 'ap-southeast-1',
-    accessKeyId: "AKIAJV3GPQ7VQQOXRCDQ",
-    secretAccessKey: "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",
+    accessKeyId: "AKIA2MHOP7MJZNAD5XMR",
+    secretAccessKey: "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",
 }
 const ReactS3Client = new S3(config);
 const uploadImages = (file) => {

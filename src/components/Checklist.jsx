@@ -91,20 +91,23 @@ export default class Checklist extends Component {
         this.setState(obj);
     }
     deleteList() {
-        var params = {
-            TableName: "todolist",
-            Key: {
-                "todolist_id": this.props.checklist.todolist_id,
-            }
-        };
-        docClient.delete(params, function (err, data) {
-            if (err) {
-                console.error("Unable to delete item. Error JSON:", JSON.stringify(err, null, 2));
-            } else {
-                this.props.getList();
-                console.log("DeleteItem succeeded:", JSON.stringify(data, null, 2));
-            }
-        }.bind(this));
+        var confirm_box = window.confirm("Do you want to delete the todolist.");
+        if (confirm_box === true) {
+            var params = {
+                TableName: "todolist",
+                Key: {
+                    "todolist_id": this.props.checklist.todolist_id,
+                }
+            };
+            docClient.delete(params, function (err, data) {
+                if (err) {
+                    console.error("Unable to delete item. Error JSON:", JSON.stringify(err, null, 2));
+                } else {
+                    this.props.getList();
+                    console.log("DeleteItem succeeded:", JSON.stringify(data, null, 2));
+                }
+            }.bind(this));
+        }
     }
     handleAvatar(ava) {
         if (ava !== "") {
@@ -113,7 +116,7 @@ export default class Checklist extends Component {
         return require('./imgs/ava.jpg');
     }
     componentDidUpdate() {
-        if (this.state.list!== this.props.all_list[this.props.index]) {
+        if (this.state.list !== this.props.all_list[this.props.index]) {
             this.setState({ list: this.props.all_list[this.props.index] })
         }
     }

@@ -47,7 +47,7 @@ export default class Profile extends Component {
         var string = path.split('.');
         //var filename = string[0]; // get the name without the type
         var extension = string[1];
-        if (extension !== "jpg" && extension !== "png" && extension !== "jpeg" && extension !== "svg") {
+        if (extension.toLowerCase() !== "jpg" && extension.toLowerCase() !== "png" && extension.toLowerCase() !== "jpeg" && extension.toLowerCase() !== "svg") {
             alert("invalid file format");
             return;
         }
