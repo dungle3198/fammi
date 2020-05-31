@@ -49,7 +49,7 @@ export default class Home extends Component {
                     hasKey: false
                 })
                 data()
-                $('#signupModal').modal('hide')
+                
                 return true;
 
             }
@@ -102,7 +102,7 @@ export default class Home extends Component {
                 createUser(this.state.email, hashed, this.state.key, this.state.username, "", commet_id)// then create it 
                 create_cometchat_user(this.state.email, commet_id, "https://unknown2020.s3-ap-southeast-1.amazonaws.com/ava.jpg", this.state.key)
                 this.handleFamilyKey(this.state.email)
-                
+                $('#signupModal').modal('hide')
                 return (<Redirect to={"/"} />)
                 // if (document.getElementById("avatar").files[0] === undefined) {
                 //     createUser(this.state.email, hashed, this.state.key, this.state.username, "", commet_id)// then create it 
@@ -275,7 +275,7 @@ export default class Home extends Component {
                                             <label htmlFor="exampleInputEmail1">Key</label>
                                             <select className="form-control" id="exampleFormControlSelect1" onChange = {this.keySelection.bind(this)}>
                                                 <option value ={"not"}>Generate new key</option>
-                                                <option value ={"has"}>Aldready have key</option>
+                                                <option value ={"has"}>Already have key</option>
                                             </select>
                                             <input type="text"
                                                 className="form-control mt-2"

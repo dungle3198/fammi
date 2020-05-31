@@ -75,6 +75,7 @@ const joinFamily = async function(family_key,member)
         if (err) {
             console.log("users::save::error - " + JSON.stringify(err, null, 2));
         } else {
+            //alert("You joined a family")
             console.log("users::save::success");
         }
     });
