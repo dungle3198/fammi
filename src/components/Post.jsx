@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import $ from 'jquery';
-import { createPost, updatePost_Content, updatePost_Img, updatePost_Time, deletePost, docClient } from "./Data/post";
+import { v4 as uuidv4 } from 'uuid';
+import {docClient } from "./Data/post";
 import { create_post_family } from './Data/family';
 // import { user_list } from './Data/user';
 import { ReactS3Client } from "./Data/s3";
@@ -67,60 +68,16 @@ export default class Post extends Component {
             })//create cometchat user
             .catch(err => console.error(err))
     }
-    handleCreate() {
-        createPost(this.state.content, this.props.user.key, this.props.user, this.state.uploaded_img)
-        var list = this.props.family.posts;
-        var post_input = {
-            user: this.props.user.username,
-            content: this.state.content,
-            img: this.state.uploaded_img,
-            time: Date.now()
-        }
-        list.push(post_input);
-        create_post_family(this.props.family.family_key, list);
-        this.clearForm()
-        this.updatePostMul()
-    }
-    handleClick(e) {
-        this.setState({
-            id: e.target.id
-        })
-        this.getPostbyidMul(e.target.id)
-    }
-    handleEdit() {
-        if (this.checkForm() === true) {
-            updatePost_Content(this.state.id, this.state.selected_content)
-            updatePost_Time(this.state.id, Date.now())
-            updatePost_Img(this.state.id, this.state.selected_img)
-            $('#editPost').modal('hide')
-            this.updatePostMul()
-        }
-    }
-    handleDelete(e) {
-        var confirm_box = window.confirm("Do you want to delete the post.");
-        if (confirm_box === true) {
-            deletePost(e.target.id)
-            $('#editPost').modal('hide')
-            this.updatePostMul()
-        }
-
-    }
-    handleRemove() {
-        var confirm_box = window.confirm("Do you want to remove the image.");
-        if (confirm_box === true) {
-            updatePost_Img(this.state.id, "no-img")
-            this.updatePostMul()
-        }
-    }
-    updatePost() {
+    getAllPosts() 
+    {
         var params = {
             TableName: "posts"
         };
-
+        
         docClient.scan(params, function onScan(err, data) {
-
+    
             if (err) {
-                // console.error("Unable to scan the table. Error JSON:", JSON.stringify(err, null, 2));
+               // console.error("Unable to scan the table. Error JSON:", JSON.stringify(err, null, 2));
             } else {
                 //console.log("Scan succeeded.");
                 var post_list = JSON.parse(JSON.stringify(data.Items))
@@ -131,13 +88,138 @@ export default class Post extends Component {
                 //console.log(post_list)
             }
         }.bind(this));
-
+    };
+    handleCreate() {
+        this.createPost(this.state.content, this.props.user.key, this.props.user, this.state.uploaded_img)
+        var list = this.props.family.posts;
+        var post_input = {
+            user: this.props.user.username,
+            content: this.state.content,
+            img: this.state.uploaded_img,
+            time: Date.now()
+        }
+        list.push(post_input);
+        create_post_family(this.props.family.family_key, list);
+        this.clearForm()
+    }
+    createPost(content,family_key,user,img) {
+        var input = {
+            "post_id":uuidv4(),
+            "content": content,
+            "img": img,
+            "family_key" : family_key,
+            "user":user,
+            "time":Date.now(),
+            "edit_time":""
+        };
+        var params = {
+            TableName: "posts",
+            Item: input
+        };
+        docClient.put(params, function (err, data) {
+    
+            if (err) {
+                console.log("users::save::error - " + JSON.stringify(err, null, 2));
+            } else {
+                this.getAllPosts();
+                console.log("users::save::success");
+            }
+        }.bind(this))
+    }
+    handleClick(e) {
+        this.setState({
+            id: e.target.id
+        })
+        this.getPostbyidMul(e.target.id)
+    }
+    handleEdit() {
+        if (this.checkForm() === true) {
+            var params = {
+                TableName: "posts",
+                Key: {
+                    "post_id": this.state.id,
+        
+                },
+                UpdateExpression: "set #time = :time, img = :img, content = :content, edit_time = :edit_time",
+                ExpressionAttributeValues: {
+                    ":time": Date.now(),
+                    ":img": this.state.selected_img,
+                    ":content": this.state.selected_content,
+                    ":edit_time": Date.now()
+                },
+                ExpressionAttributeNames: {
+                    '#time': 'time'
+                  },
+                ReturnValues: "UPDATED_NEW"
+            };
+            docClient.update(params, function (err, data) {
+        
+                if (err) {
+                    console.log("users::save::error - " + JSON.stringify(err, null, 2));
+                } else {
+                    this.getAllPosts();
+                    console.log("users::save::success");
+                }
+            }.bind(this));
+            $('#editPost').modal('hide')
+            this.getAllPosts()
+        }
+    }
+    handleDelete(e) {
+        var confirm_box = window.confirm("Do you want to delete the post.");
+        if (confirm_box === true) {
+            var params = {
+                TableName: "posts",
+                Key: {
+                    "post_id": e.target.id,
+                }
+            };
+            docClient.delete(params, function (err, data) {
+                if (err) {
+                    //console.error("Unable to delete item. Error JSON:", JSON.stringify(err, null, 2));
+                } else {
+                    this.getAllPosts();
+                    //console.log("DeleteItem succeeded:", JSON.stringify(data, null, 2));
+                }
+            }.bind(this));
+            $('#editPost').modal('hide')
+            
+        }
 
     }
-    updatePostMul() {
-        this.updatePost()
-
+    handleRemove() {
+        var confirm_box = window.confirm("Do you want to remove the image.");
+        if (confirm_box === true) {
+            var params = {
+                TableName: "posts",
+                Key: {
+                    "post_id": this.state.id,
+        
+                },
+                UpdateExpression: "set #time = :time, img = :img, edit_time = :edit_time",
+                ExpressionAttributeValues: {
+                    ":time": Date.now(),
+                    ":img": "no-img",
+                    
+                    ":edit_time": Date.now()
+                },
+                ExpressionAttributeNames: {
+                    '#time': 'time'
+                  },
+                ReturnValues: "UPDATED_NEW"
+            };
+            docClient.update(params, function (err, data) {
+        
+                if (err) {
+                    console.log("users::save::error - " + JSON.stringify(err, null, 2));
+                } else {
+                    this.getAllPosts();
+                    console.log("users::save::success");
+                }
+            }.bind(this));
+        }
     }
+   
     getPostbyid(id) {
         var params = {
             TableName: "posts",
@@ -157,6 +239,7 @@ export default class Post extends Component {
                     selected_content: this.state.selected_post.content,
                     selected_img: this.state.selected_post.img
                 });
+                $('#editPost').modal('show')
                 // console.log("users::fetchOneByKey::success - " + JSON.stringify(data, null, 2)); ==> This is when the fetching success
             }
         }.bind(this))
@@ -191,7 +274,7 @@ export default class Post extends Component {
         );
     }
     componentDidMount() {
-        this.updatePostMul()
+        this.getAllPosts();
     }
     getAvatar(user_email) {
         var _u = this.props.users.find((e) => { return e.email === user_email });

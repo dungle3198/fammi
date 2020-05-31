@@ -164,8 +164,8 @@ export default class CalendarUser extends Component {
         //console.log(event_list)
         //console.log(this.state.event_list)
         $("#minicalendar").html("")
-        var calendarEl = document.getElementById('minicalendar');
-        var calendar = new Calendar(calendarEl, {
+        calendarEl = document.getElementById('minicalendar');
+        calendar = new Calendar(calendarEl, {
             defaultView: "dayGridMonth",
             events: list,
             plugins: [dayGridPlugin, interactionPlugin],
