@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { createUser, data, user_list } from "./Data/user";
+import { docClient } from "./Data/user";
 import { createFamily, joinFamily, family_list } from "./Data/family";
 import { create_cometchat_user } from './Data/cometchatuser'
 // import { ReactS3Client } from "./Data/s3";
@@ -48,7 +48,6 @@ export default class Home extends Component {
                     avatar: "",
                     hasKey: false
                 })
-                data()
                 
                 return true;
 
@@ -91,7 +90,7 @@ export default class Home extends Component {
         }
     }
     signUp(e) {
-        if (user_list.find(u => u.email === this.state.email) === undefined) {
+        if (this.state.user_list.find(u => u.email === this.state.email) === undefined) {
             function validateEmail(email) {
                 return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
             }
@@ -99,7 +98,7 @@ export default class Home extends Component {
                 var hashed = bcrypt.hashSync(this.state.password, 10) // hashing password
                 var commet_id = "user" + uuidv4();
 
-                createUser(this.state.email, hashed, this.state.key, this.state.username, "", commet_id)// then create it 
+                this.createUser(this.state.email, hashed, this.state.key, this.state.username, "", commet_id)// then create it 
                 create_cometchat_user(this.state.email, commet_id, "https://unknown2020.s3-ap-southeast-1.amazonaws.com/ava.jpg", this.state.key)
                 this.handleFamilyKey(this.state.email)
                 $('#signupModal').modal('hide')
@@ -128,16 +127,17 @@ export default class Home extends Component {
                 //setTimeout(e, 1000)
                 //alert("You have successfully signed up")
             }
+            return
         }
-        else if (user_list.find(u => u.email === this.state.email) !== undefined) {
+        else if (this.state.user_list.find(u => u.email === this.state.email) !== undefined) {
             alert("This email address has been used for another account")
             return
         }
         alert("Invalid email address")
     }
     login(e) {
-        if (user_list.find(u => u.email === this.state.email) !== undefined) {
-            var user = user_list.find(u => u.email === this.state.email)
+        if (this.state.user_list.find(u => u.email === this.state.email) !== undefined) {
+            var user = this.state.user_list.find(u => u.email === this.state.email)
             if (bcrypt.compareSync(this.state.password, user.password)) {
 
                 var check_box = document.getElementById("exampleCheck1")
@@ -175,8 +175,51 @@ export default class Home extends Component {
         this.setState(obj);
         //console.log(user_list)
     }
+    createUser (email, password, key, username,avatar,comet_id) {
+        var input = {
+            "email": email,
+            "password": password,
+            "key": key,
+            "username": username,
+            "avatar": avatar,
+            "comet_uid": comet_id
+        };
+        var params = {
+            TableName: "users",
+            Item: input
+        };
+        docClient.put(params, function (err, data) {
+    
+            if (err) {
+                console.log("users::save::error - " + JSON.stringify(err, null, 2));
+            } else {
+                console.log("users::save::success");
+                this.getAllUsers();
+                alert("you have successfully signed up")
+            }
+        }.bind(this))
+        
+    }
+    getAllUsers (){
+        var params = {
+            TableName: "users"
+        };
+        
+        docClient.scan(params, function(err, data){
+            if (err) 
+            {
+                console.error("Unable to scan the table. Error JSON:", JSON.stringify(err, null, 2));
+            } 
+            else {
+                //console.log("Scan succeeded.");
+                var users = JSON.parse(JSON.stringify(data.Items))
+                this.setState({user_list:users})
+            }
+        }.bind(this));
+        
+    };
     componentDidMount() {
-        data();
+        this.getAllUsers();
     }
 
     render() {

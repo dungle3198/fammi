@@ -54,7 +54,6 @@ const createUser = async function (email, password, key, username,avatar,comet_i
             console.log("users::save::error - " + JSON.stringify(err, null, 2));
         } else {
             console.log("users::save::success");
-            this.data()
             alert("you have successfully signed up")
         }
     }.bind(this))

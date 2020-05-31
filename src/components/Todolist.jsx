@@ -348,9 +348,6 @@ export default class Todolist extends Component {
         //this.getTodolistbyidMul(this.state.selected_id)
     }
     showSelectedList() {
-        $("#editList").on("hide.bs.modal", function () {
-            
-        }.bind(this));
         if (this.state.checklist.elements !== undefined) {
             return <div className="modal fade" id="editList" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div className="modal-dialog" role="document">
