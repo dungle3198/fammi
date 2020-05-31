@@ -54,10 +54,10 @@ const createUser = async function (email, password, key, username,avatar,comet_i
             console.log("users::save::error - " + JSON.stringify(err, null, 2));
         } else {
             console.log("users::save::success");
-            data()
+            this.data()
             alert("you have successfully signed up")
         }
-    })
+    }.bind(this))
     
 }
 //this function is to get an item by id in a table in Dynamo
